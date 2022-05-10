@@ -13,10 +13,11 @@ public class Pig : Character
     public Transform itemPos;
 
 
-    public void Start()
+    public void OnEnable()
     {
         hitPoints = startingHitPoints;
         armor = startingArmor;
+        hitPoints += 30;
     }
 
 

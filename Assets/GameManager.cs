@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public GameObject SetupMenu;
@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     float sec;
 
     PlayerAttack PA;
+    SkillAttack SA;
 
     public GameObject LevelUp;
 
@@ -22,23 +23,41 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int Level;
 
-    bool IsUI;
+    public bool IsUI;
+    public bool IsClear;
+
+    public Image MissionClear;
+    public Image FadeIn;
+    public Image FadeOut;
     void Start()
     {
+        Time.timeScale = 1.0f;
+
         IsUI = true;
 
         PA = FindObjectOfType<PlayerAttack>();
+        SA = FindObjectOfType<SkillAttack>();
         SetupMenu.SetActive(false);
+        FadeIn.gameObject.SetActive(true);
+        FadeOut.gameObject.SetActive(false);
     }
 
     private void Update()
     {
+        if(setTime <= 0)
+        {
+            MissionClear.gameObject.SetActive(true); 
+            SaveMoney.instance.youWin();
+            IsClear = true;
+        }
+
+        Clear();
+
         UI_Active();
         CountDown();
 
         if (EXP_Bar.value >= EXP_Bar.maxValue)
         {
-            Debug.Log("씨발");
             Level++;
             EXP_Bar.value = 0;
         }
@@ -49,9 +68,27 @@ public class GameManager : MonoBehaviour
                 EXP_Bar.maxValue = 150;
                 LevelUpUI1();
                 break;
+
+            case 2:
+                EXP_Bar.maxValue = 200;
+                LevelUpUI1();
+                break;
         }
 
+
     }
+
+    public void Clear()
+    {
+        if (IsClear)
+        {
+            SaveMoney.instance.youWin();
+            IsClear = false;
+        }
+       
+    }
+
+
     public void SetupMenuOn()
     {
         SetupMenu.gameObject.SetActive(true);
@@ -62,6 +99,11 @@ public class GameManager : MonoBehaviour
     {
         SetupMenu.gameObject.SetActive(false);
         Time.timeScale = 1;
+    }
+
+    public void ReturnGameMenu()
+    {
+        SceneManager.LoadScene("GameMenu");
     }
 
     public void AppQuit()
@@ -82,6 +124,16 @@ public class GameManager : MonoBehaviour
         PA.NormalAttackCoolTime = 2.0f;
         LevelUp.gameObject.SetActive(false);
         Time.timeScale = 1.0f;
+
+        if (Level == 2)
+        {
+            PA.NormalAttackCoolTime = 1.8f;
+        }
+    }
+
+    public void UIfalse()
+    {
+        IsUI = true;
     }
 
     public void EnergyBall()
@@ -91,6 +143,11 @@ public class GameManager : MonoBehaviour
         PA.SkillBool = true;
         LevelUp.gameObject.SetActive(false);
         Time.timeScale = 1.0f;
+
+        if(Level == 2)
+        {
+            SA.damage += 20;
+        }
     }
 
     void UI_Active()
@@ -199,7 +256,7 @@ public class GameManager : MonoBehaviour
         if (setTime <= 0)
         {
             // UI 텍스트를 0초로 고정시킴.
-            countdownText.text = "Mission Fail";
+            countdownText.text = "MISSION CLEAR";
         }
 
     }

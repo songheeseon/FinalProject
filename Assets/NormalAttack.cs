@@ -10,7 +10,6 @@ public class NormalAttack : MonoBehaviour
 
     public float range;
     public GameObject Target;
-
     public int damage;
 
     void Start()
@@ -123,9 +122,18 @@ public class NormalAttack : MonoBehaviour
                 StartCoroutine(duck.DamageCharacter(damage, 0.0f)); //데미지 정보 전달             
                 isHit = true;
                 Destroy(gameObject);
-            }
+            }         
+        }
 
-            
+        if(collision is BoxCollider2D)
+        {
+            if(collision.CompareTag("Monster") && collision.gameObject.layer == 7)
+            {
+                PigKing pigking = collision.gameObject.GetComponent<PigKing>();
+                StartCoroutine(pigking.DamageCharacter(damage, 0.0f)); //데미지 정보 전달             
+                isHit = true;
+                Destroy(gameObject);
+            }
         }
     }
 }

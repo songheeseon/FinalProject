@@ -25,10 +25,6 @@ public class M1_Pig_Behavior : MonoBehaviour
         Movement();
         LookAtPlayer();
 
-        if (IsDamage)
-        {
-           
-        }
     }
 
 
@@ -64,8 +60,6 @@ public class M1_Pig_Behavior : MonoBehaviour
                 damageCoroutine = StartCoroutine(player.DamageCharacter(damage, 1.0f)); //데미지 정보 전달
             }
         }
-
-
     }
 
     void OnTriggerExit2D(Collider2D collision)
